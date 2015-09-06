@@ -10,10 +10,12 @@ function Accordion(o) {
         _.id = addCounter++;
         _.w = o.target;
         _.o = o;
-    };
+    }
+
     _.isTab = function (el) {
         return el.hasAttribute('role') && el.getAttribute('role') === 'tab';
     };
+
     _.isTabPanel = function (el) {
         return el.hasAttribute('role') && el.getAttribute('role') === 'tabpanel';
     };
@@ -25,6 +27,9 @@ function Accordion(o) {
             kc = e.keyCode;
 
         if (_.isTab(t) && (e.type === 'click' || e.type === 'keydown' && (kc === 13 || kc === 32))) {
+
+            if (_.o.single) _.closeAll(t);
+
             _.toggle(t);
         }
         if (e.type === "keydown") {
@@ -56,6 +61,20 @@ function Accordion(o) {
             }
         }
         e.stopPropagation();
+    };
+
+    _.closeAll = function (t) {
+        for (var i = 0; i < _.btns.length; i++) {
+            if (_.btns[i] !== t) _.close(i);
+        }
+    };
+
+    _.close = function (i) {
+        var b = _.btns[i],
+            p = _.panels[i];
+        b.setAttribute('aria-selected', false);
+        b.setAttribute('aria-expanded', false);
+        p.setAttribute('aria-hidden', true);
     };
 
     _.getTab = function (e) {
@@ -101,9 +120,10 @@ function Accordion(o) {
 
         w.setAttribute('role', 'tablist');
         w.setAttribute('aria-multiselectable', true);
-        console.log();
+
         _.btns = w.querySelectorAll('[role=tab]');
         _.panels = w.querySelectorAll('[role=tabpanel]');
+
         if (_.btns.length !== _.panels.length) {
             throw 'accordion module : numbers of control tabs and panels dont match';
         } else {
@@ -131,7 +151,8 @@ function Accordion(o) {
 
 function pageLoaded() {
     new Accordion({
-        target: document.querySelector('[data-widget=accordion]')
+        target: document.querySelector('[data-widget=accordion]'),
+        single: true
     });
 };
 
