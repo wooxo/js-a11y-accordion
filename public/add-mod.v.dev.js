@@ -1,3 +1,5 @@
+'use strict';
+
 var addCounter = 1;
 'use strict';
 
@@ -10,11 +12,11 @@ function Accordion(o) {
         _.o = o;
     };
     _.isTab = function (el) {
-        return (el.hasAttribute('role') && el.getAttribute('role') === 'tab');
-    }
+        return el.hasAttribute('role') && el.getAttribute('role') === 'tab';
+    };
     _.isTabPanel = function (el) {
-        return (el.hasAttribute('role') && el.getAttribute('role') === 'tabpanel');
-    }
+        return el.hasAttribute('role') && el.getAttribute('role') === 'tabpanel';
+    };
 
     _.handleUserEvent = function (e) {
         e = e ? e : arguments[0];
@@ -22,8 +24,7 @@ function Accordion(o) {
         var t = e.target || e.srcElement,
             kc = e.keyCode;
 
-        if (_.isTab(t) &&
-            (e.type === 'click' || (e.type === 'keydown' && (kc === 13 || kc === 32)))) {
+        if (_.isTab(t) && (e.type === 'click' || e.type === 'keydown' && (kc === 13 || kc === 32))) {
             _.toggle(t);
         }
         if (e.type === "keydown") {
@@ -52,9 +53,7 @@ function Accordion(o) {
                 // end
                 if (e.keyCode === 36) _.move2(0);
                 if (e.keyCode === 35) _.move2(_.btns.length - 1);
-
             }
-
         }
         e.stopPropagation();
     };
@@ -73,18 +72,18 @@ function Accordion(o) {
 
     _.current = function (c) {
         var l = _.btns,
-            i, ci;
+            i,
+            ci;
         for (i = 0; i < l.length; i++) {
             if (l[i] === c) {
                 ci = i;
             }
         }
         return ci;
-    }
+    };
 
     _.move2 = function (i) {
-        if (i < 0) i = _.btns.length - 1;
-        else if (i >= _.btns.length) i = 0;
+        if (i < 0) i = _.btns.length - 1;else if (i >= _.btns.length) i = 0;
         _.btns[i].focus();
     };
 
@@ -134,7 +133,7 @@ function pageLoaded() {
     new Accordion({
         target: document.querySelector('[data-widget=accordion]')
     });
-
 };
 
 document.addEventListener('Load', pageLoaded());
+//# sourceMappingURL=add-mod.js.map

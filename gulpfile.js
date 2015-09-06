@@ -113,11 +113,11 @@ gulp.task("default", ["styles", "scripts"], function () {
 
 gulp.task("export", function () {
     'use strict';
-    gulp.src(paths.jsProd + 'app.js')
+    gulp.src(paths.jsProd + mainJS)
         .pipe(rename(appName + '.v.dev.js'))
         .pipe(gulp.dest(paths.jsExport));
 
-    gulp.src(paths.jsProd + 'app.js')
+    gulp.src(paths.jsProd + mainJS)
         .pipe(babel({
             compact: true
         }))
