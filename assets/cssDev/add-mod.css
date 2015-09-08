@@ -1,0 +1,16 @@
+[aria-hidden=true] {
+    display: none;
+}
+@keyframes close {
+    from {
+        background:#fff;
+    }
+    to{
+        background:red;
+    }
+}
+
+.isAnimated {
+
+    animation: close 1s ease-in-out;
+}
