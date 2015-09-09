@@ -2,4 +2,4 @@
 
 Simple vanilla-js widget following aria guideline for accessibility http://www.w3.org/TR/wai-aria-practices/#accordion
 
-> Inspired by [Nicolas Hoffmann 's jquery plugins](http://a11y.nicolas-hoffmann.net)
+> Inspired by [Nicolas Hoffmann's jquery plugins](http://a11y.nicolas-hoffmann.net)
