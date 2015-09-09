@@ -18,6 +18,7 @@ function Accordion(o) {
         this.classList.remove('isAnimated');
         var st = this.getAttribute('aria-hidden') === 'true' ? true : false;
         this.setAttribute('aria-hidden', !st);
+        this.classList.remove('isOpen');
         this.removeEventListener(_.o.anim, _.animTimer, true);
     };
 
@@ -54,10 +55,11 @@ function Accordion(o) {
             em = e.currentTarget;
         if (em == document && _.o.closeOut) {
             _.closeAll();
+            e.stopPropagation();
         }
         if (_.isTab(t) && (e.type === 'click' || e.type === 'keydown' && (kc === 13 || kc === 32))) {
 
-            _.closeAll();
+            _.closeAll(t);
             _.toggle(_.current(t));
         }
         if (e.type === "keydown") {
@@ -83,6 +85,7 @@ function Accordion(o) {
                 if (kc === 35) _.move2(_.btns.length - 1);
             }
         }
+
         e.stopPropagation();
     };
 
@@ -95,12 +98,12 @@ function Accordion(o) {
     _.open = function (i) {
         var b = _.btns[i],
             p = _.panels[i];
-        if (p.classList.contains('isAnimated') !== true) {
-            if (b.getAttribute('aria-expanded') === "false") {
-                b.setAttribute('aria-selected', true);
-                b.setAttribute('aria-expanded', true);
-                p.setAttribute('aria-hidden', false);
-            }
+        if (p.classList.contains('isAnimated') !== true && b.getAttribute('aria-expanded') === "false") {
+            b.classList.add('isOpen');
+            p.classList.add('isOpen');
+            b.setAttribute('aria-selected', true);
+            b.setAttribute('aria-expanded', true);
+            p.setAttribute('aria-hidden', false);
         }
     };
     _.close = function (i) {
@@ -109,11 +112,13 @@ function Accordion(o) {
         if (b.getAttribute('aria-expanded') === "true") {
             b.setAttribute('aria-selected', false);
             b.setAttribute('aria-expanded', false);
+            b.classList.remove('isOpen');
             if (_.o.anim) {
                 p.classList.add('isAnimated');
                 p.addEventListener(_.o.anim, _.animTimer, true);
             } else {
                 p.setAttribute('aria-hidden', true);
+                p.classList.remove('isOpen');
             }
         }
     };
@@ -147,8 +152,9 @@ function Accordion(o) {
     };
 
     _.toggle = function (i) {
-        var sb = _.btns[i].getAttribute('aria-expanded');
-        if (sb !== 'true') {
+        var btn = _.btns[i];
+        console.log(btn);
+        if (btn.getAttribute('aria-expanded') !== 'true') {
             _.open(i);
         } else {
             _.close(i);
@@ -194,7 +200,7 @@ function Accordion(o) {
 
     (function () {
         _.o.open = _.o.open || false;
-        _.o.multi = _.o.multi || true;
+        _.o.multi = _.o.multi || false;
         _.o.anim = _.o.anim ? _.animEvent() : false;
         _.setup(_.o.target);
     })();
