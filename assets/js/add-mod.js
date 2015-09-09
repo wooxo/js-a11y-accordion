@@ -16,7 +16,8 @@ function Accordion(o) {
 
     _.animTimer = function () {
         this.classList.remove('isAnimated');
-        this.setAttribute('aria-hidden', true);
+        var st = this.getAttribute('aria-hidden') === 'true' ? true : false;
+        this.setAttribute('aria-hidden', !st);
         this.removeEventListener(_.o.anim, _.animTimer, true);
     };
 
@@ -88,29 +89,31 @@ function Accordion(o) {
     _.closeAll = function (t) {
         for (var i = 0; i < _.btns.length; i++) {
 
-            if (_.btns[i] !== t && _.o.single) _.close(i);
+            if (_.btns[i] !== t && !_.o.multi) _.close(i);
         }
     };
-    _.open = function (index) {
-        var btn = _.btns[index],
-            panel = _.panels[index];
-        if (btn.getAttribute('aria-expanded') === "false") {
-            btn.setAttribute('aria-selected', true);
-            btn.setAttribute('aria-expanded', true);
-            panel.setAttribute('aria-hidden', false);
+    _.open = function (i) {
+        var b = _.btns[i],
+            p = _.panels[i];
+        if (p.classList.contains('isAnimated') !== true) {
+            if (b.getAttribute('aria-expanded') === "false") {
+                b.setAttribute('aria-selected', true);
+                b.setAttribute('aria-expanded', true);
+                p.setAttribute('aria-hidden', false);
+            }
         }
     };
-    _.close = function (index) {
-        var btn = _.btns[index],
-            panel = _.panels[index];
-        if (btn.getAttribute('aria-expanded') === "true") {
-            btn.setAttribute('aria-selected', false);
-            btn.setAttribute('aria-expanded', false);
+    _.close = function (i) {
+        var b = _.btns[i],
+            p = _.panels[i];
+        if (b.getAttribute('aria-expanded') === "true") {
+            b.setAttribute('aria-selected', false);
+            b.setAttribute('aria-expanded', false);
             if (_.o.anim) {
-                panel.classList.add('isAnimated');
-                panel.addEventListener(_.o.anim, _.animTimer, true);
+                p.classList.add('isAnimated');
+                p.addEventListener(_.o.anim, _.animTimer, true);
             } else {
-                panel.setAttribute('aria-hidden', true);
+                p.setAttribute('aria-hidden', true);
             }
         }
     };
@@ -144,8 +147,8 @@ function Accordion(o) {
     };
 
     _.toggle = function (i) {
-        var s = _.btns[i].getAttribute('aria-expanded');
-        if (s === 'false') {
+        var sb = _.btns[i].getAttribute('aria-expanded');
+        if (sb !== 'true') {
             _.open(i);
         } else {
             _.close(i);
@@ -163,7 +166,7 @@ function Accordion(o) {
 
         w.setAttribute('role', 'tablist');
 
-        w.setAttribute('aria-multiselectable', true);
+        w.setAttribute('aria-multiselectable', _.o.multi);
 
         for (i = 0; i < els.length; i++) {
             if (_.isTab(els[i])) _.btns.push(els[i]);
@@ -191,6 +194,7 @@ function Accordion(o) {
 
     (function () {
         _.o.open = _.o.open || false;
+        _.o.multi = _.o.multi || true;
         _.o.anim = _.o.anim ? _.animEvent() : false;
         _.setup(_.o.target);
     })();
@@ -201,7 +205,7 @@ function pageLoaded() {
     for (var i = 0; i < widgets.length; i++) {
         new Accordion({
             target: widgets[i],
-            single: true,
+            multi: false,
             closeOut: true,
             anim: true
         });

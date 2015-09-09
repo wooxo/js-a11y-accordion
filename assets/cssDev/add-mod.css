@@ -1,16 +1,66 @@
+:root {
+    --gray-darker: #252525;
+    --gray-dark: #555;
+    --light: #eeeedd;
+    --accent: #5ea;
+    --font: sans-serif;
+    --transition: .3s all ease-in-out;
+    font-family:var(--font);
+}
+
+a {
+    color: var(--accent);
+    text-decoration: none;
+    padding:.25em .5em .5em;
+    display: inline-block;
+}
+a:hover,
+a:focus {
+    text-decoration: underline;
+}
+a:focus{
+    outline: dotted var(--light) thin;
+}
 [aria-hidden=true] {
     display: none;
 }
+[role=tab]{
+    padding:.5em;
+    background: var(--gray-dark);
+    margin:0;
+    transition: var(--transition);
+    cursor: pointer;
+}
+[role=tab]:hover,
+[role=tab]:focus {
+    background:var(--accent);
+}
+[role=tabpanel]{
+    padding: 1em;
+    transition: var(--transition);
+}
+
+[role=tabpanel][aria-hidden=false]{
+   /* animation: close reverse .5s ease-in-out;*/
+}
+
 @keyframes close {
     from {
-        background:#fff;
+        max-height: 25em;
     }
     to{
-        background:red;
+        max-height: 0em;
     }
 }
 
 .isAnimated {
 
-    animation: close 1s ease-in-out;
+    animation: close .5s ease-in-out;
+    overflow: hidden;
+}
+
+
+[data-widget="accordion"]{
+    color: var(--light);
+    background:var(--gray-darker);
 }

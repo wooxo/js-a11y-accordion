@@ -1,7 +1,7 @@
 {
-  "name": "BlankBase",
+  "name": "js-package",
   "version": "1.0.0",
-  "description": "Basic frontend workflow",
+  "description": "oriented js'widget developpement workflow",
   "main": "gulpfile.js",
   "dependencies": {
     "gulp": "^3.8.11"
