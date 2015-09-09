@@ -131,7 +131,7 @@ function Accordion(o) {
         while (!_.isTabPanel(cc)) {
             cc = cc.parentElement;
         }
-        return _.w.querySelector("#" + cc.getAttribute('aria-labelledby'));
+        return _.w.getElementById(cc.getAttribute('aria-labelledby'));
     };
 
     _.current = function (c) {
@@ -204,7 +204,7 @@ function Accordion(o) {
 }
 
 function pageLoaded() {
-    var widgets = document.querySelectorAll('[data-widget=accordion]');
+    var widgets = document.querySelectorAll('.accordion');
     for( var i = 0; i < widgets.length; i++ ){
         new Accordion({
             target: widgets[i],

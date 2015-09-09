@@ -14,6 +14,31 @@ function Accordion(o) {
     _.btns = [];
     _.panels = [];
 
+    _.animTimer = function () {
+        this.classList.remove('isAnimated');
+        var st = this.getAttribute('aria-hidden') === 'true' ? true : false;
+        this.setAttribute('aria-hidden', !st);
+        this.classList.remove('isOpen');
+        this.removeEventListener(_.o.anim, _.animTimer, true);
+    };
+
+    _.animEvent = function () {
+        var e,
+            el = document.createElement('fakeelement'),
+            events = {
+            'animation': 'animationend',
+            'OAnimation': 'oAnimationEnd',
+            'MozAnimation': 'animationend',
+            'WebkitTransition': 'webkitAnimationEnd'
+        };
+
+        for (e in events) {
+            if (el.style[e] !== undefined) {
+                return events[e];
+            }
+        }
+    };
+
     _.isTab = function (el) {
         return el.hasAttribute('role') && el.getAttribute('role') === 'tab';
     };
@@ -26,12 +51,16 @@ function Accordion(o) {
         e = e ? e : arguments[0];
 
         var t = e.target || e.srcElement,
-            kc = e.keyCode;
-
+            kc = e.keyCode,
+            em = e.currentTarget;
+        if (em == document && _.o.closeOut) {
+            _.closeAll();
+            e.stopPropagation();
+        }
         if (_.isTab(t) && (e.type === 'click' || e.type === 'keydown' && (kc === 13 || kc === 32))) {
 
             _.closeAll(t);
-            _.toggle(t);
+            _.toggle(_.current(t));
         }
         if (e.type === "keydown") {
             if (e.ctrlKey === true) {
@@ -56,22 +85,42 @@ function Accordion(o) {
                 if (kc === 35) _.move2(_.btns.length - 1);
             }
         }
+
         e.stopPropagation();
     };
 
     _.closeAll = function (t) {
         for (var i = 0; i < _.btns.length; i++) {
 
-            if (_.btns[i] !== t && _.o.single) _.close(i);
+            if (_.btns[i] !== t && !_.o.multi) _.close(i);
         }
     };
-
-    _.close = function (index) {
-        var btn = _.btns[index],
-            panel = _.panels[index];
-        btn.setAttribute('aria-selected', false);
-        btn.setAttribute('aria-expanded', false);
-        panel.setAttribute('aria-hidden', true);
+    _.open = function (i) {
+        var b = _.btns[i],
+            p = _.panels[i];
+        if (p.classList.contains('isAnimated') !== true && b.getAttribute('aria-expanded') === "false") {
+            b.classList.add('isOpen');
+            p.classList.add('isOpen');
+            b.setAttribute('aria-selected', true);
+            b.setAttribute('aria-expanded', true);
+            p.setAttribute('aria-hidden', false);
+        }
+    };
+    _.close = function (i) {
+        var b = _.btns[i],
+            p = _.panels[i];
+        if (b.getAttribute('aria-expanded') === "true") {
+            b.setAttribute('aria-selected', false);
+            b.setAttribute('aria-expanded', false);
+            b.classList.remove('isOpen');
+            if (_.o.anim) {
+                p.classList.add('isAnimated');
+                p.addEventListener(_.o.anim, _.animTimer, true);
+            } else {
+                p.setAttribute('aria-hidden', true);
+                p.classList.remove('isOpen');
+            }
+        }
     };
 
     _.getTab = function (e) {
@@ -82,7 +131,6 @@ function Accordion(o) {
         while (!_.isTabPanel(cc)) {
             cc = cc.parentElement;
         }
-        console.log(_.w);
         return _.w.querySelector("#" + cc.getAttribute('aria-labelledby'));
     };
 
@@ -103,13 +151,14 @@ function Accordion(o) {
         _.btns[i].focus();
     };
 
-    _.toggle = function (t) {
-        var s = t.getAttribute('aria-expanded');
-        s = s == 'false' ? true : false;
-
-        t.setAttribute('aria-expanded', s);
-        t.setAttribute('aria-selected', s);
-        t.nextElementSibling.setAttribute('aria-hidden', !s);
+    _.toggle = function (i) {
+        var btn = _.btns[i];
+        console.log(btn);
+        if (btn.getAttribute('aria-expanded') !== 'true') {
+            _.open(i);
+        } else {
+            _.close(i);
+        }
     };
 
     _.setup = function (w) {
@@ -118,9 +167,12 @@ function Accordion(o) {
             i,
             els = w.children;
 
+        document.addEventListener('click', _.handleUserEvent);
+        document.addEventListener('keydown', _.handleUserEvent);
+
         w.setAttribute('role', 'tablist');
 
-        w.setAttribute('aria-multiselectable', true);
+        w.setAttribute('aria-multiselectable', _.o.multi);
 
         for (i = 0; i < els.length; i++) {
             if (_.isTab(els[i])) _.btns.push(els[i]);
@@ -148,6 +200,8 @@ function Accordion(o) {
 
     (function () {
         _.o.open = _.o.open || false;
+        _.o.multi = _.o.multi || false;
+        _.o.anim = _.o.anim ? _.animEvent() : false;
         _.setup(_.o.target);
     })();
 }
@@ -157,7 +211,9 @@ function pageLoaded() {
     for (var i = 0; i < widgets.length; i++) {
         new Accordion({
             target: widgets[i],
-            single: true
+            multi: false,
+            closeOut: true,
+            anim: true
         });
     }
 };
