@@ -153,8 +153,8 @@ function Accordion(o) {
 
     _.toggle = function (i) {
         var btn = _.btns[i];
-        console.log(btn);
-        if(btn.getAttribute('aria-expanded') !== 'true') {
+
+        if( btn && btn.getAttribute('aria-expanded') !== 'true') {
             _.open(i);
         } else {
             _.close(i);
