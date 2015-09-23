@@ -202,17 +202,3 @@ function Accordion(o) {
         _.setup(_.o.target);
     })();
 }
-
-function pageLoaded() {
-    var widgets = document.querySelectorAll('.accordion');
-    for( var i = 0; i < widgets.length; i++ ){
-        new Accordion({
-            target: widgets[i],
-            multi: false,
-            closeOut: true,
-            anim: true
-        });
-    }
-};
-
-document.addEventListener('Load', pageLoaded());
