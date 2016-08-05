@@ -109,7 +109,7 @@ function Accordion(o) {
     _.close = function (i) {
         var b = _.btns[i],
             p = _.panels[i];
-        if(b.getAttribute('aria-expanded') === "true"){
+        if(b && b.getAttribute('aria-expanded') === "true"){
             b.setAttribute('aria-selected', false);
             b.setAttribute('aria-expanded', false);
             b.classList.remove('isOpen');
