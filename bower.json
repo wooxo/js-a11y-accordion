@@ -1,6 +1,6 @@
 {
   "name": "js-a11y-accordion",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "main": "./public/add-mod.v.min.js",
   "ignore": [ "**/.*" ]
 }
