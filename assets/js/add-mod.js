@@ -98,7 +98,7 @@ function Accordion(o) {
     _.open = function (i) {
         var b = _.btns[i],
             p = _.panels[i];
-        if (p.classList.contains('isAnimated') !== true && b.getAttribute('aria-expanded') === "false") {
+        if (p.classList.contains('isAnimated') !== true && b.hasAttribute('aria-expanded') && b.getAttribute('aria-expanded') === "false") {
             b.classList.add('isOpen');
             p.classList.add('isOpen');
             b.setAttribute('aria-selected', true);
@@ -205,18 +205,4 @@ function Accordion(o) {
         _.setup(_.o.target);
     })();
 }
-
-function pageLoaded() {
-    var widgets = document.querySelectorAll('.accordion');
-    for (var i = 0; i < widgets.length; i++) {
-        new Accordion({
-            target: widgets[i],
-            multi: false,
-            closeOut: true,
-            anim: true
-        });
-    }
-};
-
-document.addEventListener('Load', pageLoaded());
 //# sourceMappingURL=add-mod.js.map
